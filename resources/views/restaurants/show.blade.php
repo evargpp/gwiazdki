@@ -21,6 +21,37 @@
       </div>
     </div>
 
+    {{-- autor --}}
+    <div>
+      <span class="font-semibold text-gray-700">Autor:</span>
+      <span class="bg-green-100 text-green-800 text-sm px-3 py-1 rounded-full">{{ $restaurant->user->name }}</span>
+    </div>
+
+    {{-- gps --}}
+    <div>
+      <span class="font-semibold text-gray-700">GPS:</span>
+      @if ($restaurant->latitude && $restaurant->longitude)
+        <span class="bg-green-100 text-green-800 text-sm px-3 py-1 rounded-full">
+          {{ $restaurant->latitude }}, {{ $restaurant->longitude }}
+        </span>
+        <a href="https://www.openstreetmap.org/?mlat={{ $restaurant->latitude }}&mlon={{ $restaurant->longitude }}&zoom=16"
+          target="_blank" class="text-blue-600 hover:underline">
+          Pokaż na mapie
+        </a>
+      @else
+        <span class="text-gray-500">Brak danych GPS</span>
+      @endif
+    </div>
+
+    {{-- data --}}
+    <div>
+      <span class="font-semibold text-gray-700">Data utworzenia/modyfikacji:</span>
+      <span class="bg-green-100 text-green-800 text-sm px-3 py-1 rounded-full">
+        {{ $restaurant->created_at->format('d.m.Y') }} /
+        {{ $restaurant->updated_at->format('d.m.Y') }}
+      </span>
+    </div>
+
     {{-- Średnia ocena --}}
     <div>
       <span class="font-semibold text-gray-700">Opinie:</span>

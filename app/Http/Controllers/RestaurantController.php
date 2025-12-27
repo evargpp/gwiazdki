@@ -125,4 +125,15 @@ class RestaurantController extends Controller
 
         return redirect()->route('restaurants.userIndex');
     }
+
+    public function report()
+    {
+        $restaurants = Restaurant::with('reviews')
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
+            ->orderByDesc('reviews_avg_rating')
+            ->get();
+
+        return view('restaurants.report', compact('restaurants'));
+    }
 }

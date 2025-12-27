@@ -30,6 +30,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/restaurants/{restaurant}/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
     Route::get('/user/restaurants', [RestaurantController::class, 'userIndex'])->name('restaurants.userIndex');
+    Route::get('/restaurants/report', [RestaurantController::class, 'report'])->name('restaurants.report');
 });
 
 // WSZYSCY

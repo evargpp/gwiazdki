@@ -7,7 +7,7 @@
         <div class="shrink-0 flex items-center">
           <a href="{{ route('restaurants.index') }}">
             <img src="{{ asset('images/logo.png') }}" alt="Logo" style="height: 70px"> </a>
-            <h2 class="text-x1 font-semibold">Gwaiazdomat</h2>
+          <h2 class="text-x1 font-semibold">Gwaiazdomat</h2>
         </div>
 
         <!-- Navigation Links -->
@@ -15,6 +15,9 @@
           @auth
             <x-nav-link :href="route('restaurants.userIndex')" :active="request()->routeIs('restaurants.userIndex')">
               {{ __('Twoje restauracje') }}
+            </x-nav-link>
+            <x-nav-link :href="route('restaurants.report')" :active="request()->routeIs('restaurants.report')" target="_blank">
+              {{ __('Raport') }}
             </x-nav-link>
             <x-nav-link :href="route('cuisines.index')" :active="request()->routeIs('cuisines.index')">
               {{ __('Rodzaje kuchni') }}
@@ -44,7 +47,7 @@
 
             <x-slot name="content">
               <x-dropdown-link :href="route('profile.edit')">
-                {{ __('Profile') }}
+                {{ __('Profil') }}
               </x-dropdown-link>
 
               <!-- Authentication -->
@@ -54,7 +57,7 @@
                 <x-dropdown-link :href="route('logout')"
                   onclick="event.preventDefault();
                                                 this.closest('form').submit();">
-                  {{ __('Log Out') }}
+                  {{ __('Wyloguj') }}
                 </x-dropdown-link>
               </form>
             </x-slot>

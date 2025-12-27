@@ -27,4 +27,20 @@ class ProfileUpdateRequest extends FormRequest
             ],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Imię jest wymagane.',
+            'name.string'   => 'Imię musi być tekstem.',
+            'name.max'      => 'Imię może mieć maksymalnie 255 znaków.',
+
+            'email.required' => 'Adres e-mail jest wymagany.',
+            'email.string'   => 'Adres e-mail musi być tekstem.',
+            'email.email'    => 'Podaj poprawny adres e-mail.',
+            'email.max'      => 'Adres e-mail może mieć maksymalnie 255 znaków.',
+            'email.unique'   => 'Ten adres e-mail jest już zajęty.',
+        ];
+    }
+
 }

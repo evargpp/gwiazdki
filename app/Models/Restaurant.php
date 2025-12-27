@@ -42,4 +42,9 @@ class Restaurant extends Model
     {
         return $this->reviews()->where('user_id', $user->id)->exists();
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
