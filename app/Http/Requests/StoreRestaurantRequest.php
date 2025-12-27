@@ -11,7 +11,7 @@ class StoreRestaurantRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,24 @@ class StoreRestaurantRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required|string|max:255|unique:restaurants,name',
+            'address' => 'required|string|max:255',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+            'image' => 'nullable|image|max:2048',
+            'cuisines' => 'array',
+            'cuisines.*' => 'exists:cuisines,id',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Nazwa restauracji jest wymagana.',
+            'address.required' => 'Adres jest wymagany.',
+            'image.image' => 'Plik musi być obrazem.',
+            'image.max' => 'Plik nie może przekraczać 2MB.',
+            'name.unique' => 'Restauracja o takiej nazwie już istnieje.',
         ];
     }
 }

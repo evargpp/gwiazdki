@@ -19,7 +19,8 @@ class ReviewController extends Controller
         // BLOKADA: czy user już ocenił?
         if ($restaurant->reviews()
             ->where('user_id', Auth::id())
-            ->exists()) {
+            ->exists()
+        ) {
 
             return back()->withErrors(
                 'Już wystawiłeś opinię tej restauracji.'
@@ -34,5 +35,18 @@ class ReviewController extends Controller
         ]);
 
         return back()->with('success', 'Opinia dodana');
+    }
+
+    public function destroy(Restaurant $restaurant, Review $review)
+    {
+        // Sprawdzenie, czy aktualny użytkownik może usunąć opinię
+        if ($review->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $review->delete();
+
+        return redirect()->route('restaurants.show', $restaurant)
+            ->with('success', 'Opinia została usunięta.');
     }
 }

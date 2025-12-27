@@ -1,21 +1,18 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl">Edytuj rodzaj kuchni</h2>
-    </x-slot>
+  <x-slot name="header">
+    <h2 class="font-semibold text-xl">Edytuj rodzaj kuchni</h2>
+  </x-slot>
+  <div class="max-w-7xl mx-auto py-6 px-4 gap-6 mt-6">
 
-    <div class="p-6">
-        <form method="POST" action="{{ route('cuisines.update', $cuisine) }}">
-            @csrf
-            @method('PUT')
+    <form method="POST" action="{{ route('cuisines.update', $cuisine) }}">
+      @csrf
+      @method('PUT')
 
-            <input type="text" name="name"
-                   value="{{ $cuisine->name }}"
-                   class="border p-2 w-full"
-                   required>
+      <input type="text" name="name" value="{{ $cuisine->name }}" class="border p-2 w-full" required>
 
-            <button class="mt-4 bg-blue-600 text-white px-4 py-2 rounded">
-                Zapisz zmiany
-            </button>
-        </form>
-    </div>
+      <button class="mt-4 bg-blue-600 text-white px-4 py-2 rounded">
+        Zapisz
+      </button>
+    </form>
+  </div>
 </x-app-layout>

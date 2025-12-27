@@ -37,4 +37,9 @@ class Restaurant extends Model
     {
         return $this->reviews()->avg('rating') ?: 0;
     }
+
+    public function hasReviewFrom(User $user)
+    {
+        return $this->reviews()->where('user_id', $user->id)->exists();
+    }
 }

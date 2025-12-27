@@ -29,6 +29,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/restaurants/{restaurant}', [RestaurantController::class, 'destroy'])->name('restaurants.destroy');
     Route::post('/restaurants/{restaurant}/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    Route::get('/user/restaurants', [RestaurantController::class, 'userIndex'])->name('restaurants.userIndex');
 });
 
 // WSZYSCY
@@ -50,7 +51,11 @@ Route::controller(CuisineController::class)->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::post('/restaurants/{restaurant}/reviews',
+    Route::post(
+        '/restaurants/{restaurant}/reviews',
         [ReviewController::class, 'store']
     )->name('reviews.store');
+
+    Route::delete('/restaurants/{restaurant}/reviews/{review}', [ReviewController::class, 'destroy'])
+        ->name('restaurants.reviews.destroy');
 });

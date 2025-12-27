@@ -22,14 +22,6 @@ class RestaurantController extends Controller
             ? 'desc'
             : 'asc';
 
-        // $restaurants = Restaurant::with('cuisines', 'reviews')->orderBy($sort, $direction)->paginate(10);
-
-        // return view('restaurants.index', compact(
-        //     'restaurants',
-        //     'sort',
-        //     'direction'
-        // ));
-
         $allCuisines = Cuisine::orderBy('name')->get();
 
         $restaurants = Restaurant::with('cuisines', 'reviews')
@@ -48,11 +40,29 @@ class RestaurantController extends Controller
         return view('restaurants.index', compact('restaurants', 'allCuisines', 'sort', 'direction'));
     }
 
+    public function userIndex(Request $request)
+    {
+        $restaurants = auth()->user()
+            ->restaurants()
+            ->with('cuisines')
+            ->latest()
+            ->get();
+        return view('restaurants.indexUser', compact('restaurants'));
+    }
+
+
     public function show(Restaurant $restaurant)
     {
-        $restaurant->load('comments.user');
+        $restaurant->load('reviews.user');
 
-        return view('restaurants.show', compact('restaurant'));
+        $userReview = null;
+        if (auth()->check()) {
+            $userReview = $restaurant->reviews()
+                ->where('user_id', auth()->id())
+                ->first();
+        }
+
+        return view('restaurants.show', compact('restaurant', 'userReview'));
     }
 
     public function create()
@@ -62,26 +72,29 @@ class RestaurantController extends Controller
         return view('restaurants.create', compact('cuisines'));
     }
 
-    public function store(Request $request)
+    public function store(StoreRestaurantRequest $request)
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
-            'image' => 'nullable|image',
-            'cuisines' => 'array'
-        ]);
+        // $data = $request->validate([
+        //     'name' => 'required|string|max:255',
+        //     'address' => 'required|string|max:255',
+        //     'latitude' => 'nullable|numeric',
+        //     'longitude' => 'nullable|numeric',
+        //     'image' => 'nullable|image',
+        //     'cuisines' => 'array',
+        // ]);
+
+        $data = $request->validated();
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')
                 ->store('restaurants', 'public');
         }
 
-        $restaurant = Restaurant::create($data);
+        $data['user_id'] = auth()->id();
+        $restaurant = auth()->user()->restaurants()->create($data);
         $restaurant->cuisines()->sync($request->cuisines ?? []);
 
-        return redirect()->route('restaurants.index');
+        return redirect()->route('restaurants.userIndex');
     }
 
     public function edit(Restaurant $restaurant)
@@ -91,16 +104,9 @@ class RestaurantController extends Controller
         return view('restaurants.edit', compact('restaurant', 'cuisines'));
     }
 
-    public function update(Request $request, Restaurant $restaurant)
+    public function update(UpdateRestaurantRequest $request, Restaurant $restaurant)
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
-            'image' => 'nullable|image',
-            'cuisines' => 'array'
-        ]);
+        $data = $request->validated();
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')
@@ -110,13 +116,13 @@ class RestaurantController extends Controller
         $restaurant->update($data);
         $restaurant->cuisines()->sync($request->cuisines ?? []);
 
-        return redirect()->route('restaurants.index');
+        return redirect()->route('restaurants.userIndex');
     }
 
     public function destroy(Restaurant $restaurant)
     {
         $restaurant->delete();
 
-        return redirect()->route('restaurants.index');
+        return redirect()->route('restaurants.userIndex');
     }
 }

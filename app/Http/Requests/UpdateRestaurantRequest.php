@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateRestaurantRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class UpdateRestaurantRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +22,27 @@ class UpdateRestaurantRequest extends FormRequest
      */
     public function rules(): array
     {
+        //die($this->restaurant);
         return [
-            //
+            'name' => 'required|string|max:255|unique:restaurants,name,' . $this->restaurant->id,
+            'address' => 'required|string|max:255',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+            'image' => 'nullable|image|max:2048',
+            'cuisines' => 'array',
+            'cuisines.*' => 'exists:cuisines,id',
+        ];
+
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Nazwa restauracji jest wymagana.',
+            'address.required' => 'Adres jest wymagany.',
+            'image.image' => 'Plik musi być obrazem.',
+            'image.max' => 'Plik nie może przekraczać 2MB.',
+            'name.unique' => 'Restauracja o takiej nazwie już istnieje.',
         ];
     }
 }

@@ -59,10 +59,75 @@
 
     </div>
 
+    {{-- Opinia użytkownika --}}
+    @auth
+      @if ($userReview)
+        <div>
+          <h2 class="font-semibold text-gray-700">Twoja opinia i komentarz</h2>
+          <div class="border p-4 rounded-lg">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-semibold">Użytkownik: {{ Auth::user()->name }} </span>
+              <span class="text-yellow-500">Opinia:
+                @for ($i = 1; $i <= 5; $i++)
+                  @if ($i <= $userReview->rating)
+                    ★
+                  @else
+                    ☆
+                  @endif
+                @endfor
+              </span>
+            </div>
+            @if ($userReview->comment)
+              Komentarz:<br>
+              <p class="text-gray-700">{{ $userReview->comment }}</p>
+            @endif
+            <i>Data dodania: {{ $userReview->created_at->format('d.m.Y') }}</i>
+          </div>
+          <form action="{{ route('restaurants.reviews.destroy', [$restaurant, $userReview]) }}" method="POST"
+            class="mt-2">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+              onclick="return confirm('Na pewno chcesz usunąć opinię?')">
+              Usuń
+            </button>
+          </form>
+        </div>
+      @else
+        <div>
+          <h2 class="font-semibold text-gray-700">Twoja opinia i komentarz</h2>
+          <form action="{{ route('reviews.store', $restaurant) }}" method="POST" class="mt-6 space-y-4">
+            @csrf
+            {{-- Ocena w skali 1-5 --}}
+            <div>
+              <label class="block mb-1 font-medium text-gray-700">Ocena:</label>
+              <select name="rating" class="border rounded px-3 py-2 w-32">
+                <option value="1">★</option>
+                <option value="2">★★</option>
+                <option value="3">★★★</option>
+                <option value="4">★★★★</option>
+                <option value="5">★★★★★</option>
+              </select>
+            </div>
+
+            {{-- Komentarz --}}
+            <div>
+              <label class="block mb-1 font-medium text-gray-700">Komentarz:</label>
+              <textarea name="comment" rows="3" class="border rounded w-full px-3 py-2"></textarea>
+            </div>
+
+            <button type="submit" class="mt-4 bg-blue-600 text-white px-4 py-2 rounded">Dodaj
+              opinię</button>
+          </form>
+
+
+        </div>
+      @endif
+    @endauth
 
     {{-- Lista opinii --}}
     <div>
-      <h2 class="font-semibold text-gray-700">Komentarze użytkowników</h2>
+      <h2 class="font-semibold text-gray-700">Opinie i komentarze użytkowników</h2>
 
       @forelse($restaurant->reviews as $review)
         <div class="border p-4 rounded-lg">
@@ -88,33 +153,6 @@
         <p class="text-gray-500">Brak opinii dla tej restauracji.</p>
       @endforelse
     </div>
-
-    {{-- Formularz dodania opinii (jeśli zalogowany) --}}
-    @auth
-      <form action="{{ route('restaurants.reviews.store', $restaurant) }}" method="POST" class="mt-6 space-y-4">
-        @csrf
-        <h3 class="text-lg font-semibold text-gray-700">Dodaj opinię</h3>
-
-        {{-- Ocena w skali 1-5 --}}
-        <div>
-          <label class="block mb-1 font-medium text-gray-700">Ocena:</label>
-          <select name="rating" class="border rounded px-3 py-2 w-32">
-            @for ($i = 1; $i <= 5; $i++)
-              <option value="{{ $i }}">{{ $i }}</option>
-            @endfor
-          </select>
-        </div>
-
-        {{-- Komentarz --}}
-        <div>
-          <label class="block mb-1 font-medium text-gray-700">Komentarz:</label>
-          <textarea name="comment" rows="3" class="border rounded w-full px-3 py-2"></textarea>
-        </div>
-
-        <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Dodaj opinię</button>
-      </form>
-    @endauth
-
   </div>
 
 </x-app-layout>

@@ -1,10 +1,44 @@
 <x-app-layout>
-    <x-slot name="header">Edytuj restaurację</x-slot>
+  <x-slot name="header">Edytuj restaurację</x-slot>
 
-    <form method="POST" enctype="multipart/form-data"
-          action="{{ route('restaurants.update', $restaurant) }}"
-          class="max-w-xl mx-auto py-6">
-        @method('PUT')
-        @include('restaurants._form')
+  <div class="max-w-7xl mx-auto py-6 px-4 gap-6 mt-6">
+
+    @if ($errors->any())
+      <div class="bg-red-100 text-red-800 p-4 rounded mb-4">
+        <label class="font-semibold">Błędy:</label>
+        <ul class="list-disc list-inside">
+          @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+          @endforeach
+        </ul>
+      </div>
+    @endif
+
+    <form method="POST" enctype="multipart/form-data" action="{{ route('restaurants.update', $restaurant) }}">
+      @method('PUT')
+      @csrf
+
+      <input name="name" value="{{ old('name', $restaurant->name ?? '') }}" class="w-full border rounded p-2 mt-4"
+        placeholder="Nazwa">
+
+      <input name="address" value="{{ old('address', $restaurant->address ?? '') }}"
+        class="w-full border rounded p-2 mt-4" placeholder="Adres">
+
+      <input type="file" name="image" class="mt-4">
+
+      <div class="mt-4">
+        <label class="font-semibold mt-4">Rodzaje kuchni</label>
+        @foreach ($cuisines as $cuisine)
+          <div>
+            <input type="checkbox" name="cuisines[]" value="{{ $cuisine->id }}" @checked(isset($restaurant) && $restaurant->cuisines->contains($cuisine))>
+            {{ $cuisine->name }}
+          </div>
+        @endforeach
+      </div>
+
+      <button class="mt-4 bg-blue-600 text-white px-4 py-2 rounded">
+        Zapisz
+      </button>
     </form>
+  </div>
 </x-app-layout>
