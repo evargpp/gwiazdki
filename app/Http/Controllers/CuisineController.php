@@ -54,6 +54,10 @@ class CuisineController extends Controller
     {
         $cuisine->delete();
 
+
+        return view('cuisines.create');
+
+
         return redirect()
             ->route('cuisines.index')
             ->with('success', 'Rodzaj kuchni usunięty');

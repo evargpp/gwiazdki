@@ -74,6 +74,7 @@
     </table>
 
     <p>Raport wygenerowano: {{ now()->format('d-m-Y H:i') }}</p>
+    <p>Raport dla uzytkownika: {{ Auth::user()->name }} ({{ Auth::user()->email }})</p>
 
 </body>
 </html>

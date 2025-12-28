@@ -7,6 +7,7 @@ use App\Http\Requests\StoreRestaurantRequest;
 use App\Http\Requests\UpdateRestaurantRequest;
 use App\Models\Cuisine;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RestaurantController extends Controller
 {
@@ -42,7 +43,7 @@ class RestaurantController extends Controller
 
     public function userIndex(Request $request)
     {
-        $restaurants = auth()->user()
+        $restaurants = Auth::user()
             ->restaurants()
             ->with('cuisines')
             ->latest()
@@ -56,14 +57,15 @@ class RestaurantController extends Controller
         $restaurant->load('reviews.user');
 
         $userReview = null;
-        if (auth()->check()) {
+        if (Auth::check()) {
             $userReview = $restaurant->reviews()
-                ->where('user_id', auth()->id())
+                ->where('user_id', Auth::id())
                 ->first();
         }
 
         return view('restaurants.show', compact('restaurant', 'userReview'));
     }
+
 
     public function create()
     {
@@ -72,17 +74,9 @@ class RestaurantController extends Controller
         return view('restaurants.create', compact('cuisines'));
     }
 
+
     public function store(StoreRestaurantRequest $request)
     {
-        // $data = $request->validate([
-        //     'name' => 'required|string|max:255',
-        //     'address' => 'required|string|max:255',
-        //     'latitude' => 'nullable|numeric',
-        //     'longitude' => 'nullable|numeric',
-        //     'image' => 'nullable|image',
-        //     'cuisines' => 'array',
-        // ]);
-
         $data = $request->validated();
 
         if ($request->hasFile('image')) {
@@ -90,8 +84,8 @@ class RestaurantController extends Controller
                 ->store('restaurants', 'public');
         }
 
-        $data['user_id'] = auth()->id();
-        $restaurant = auth()->user()->restaurants()->create($data);
+        $data['user_id'] = Auth::id();
+        $restaurant = Auth::user()->restaurants()->create($data);
         $restaurant->cuisines()->sync($request->cuisines ?? []);
 
         return redirect()->route('restaurants.userIndex');

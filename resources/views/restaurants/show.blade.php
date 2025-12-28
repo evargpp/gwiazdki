@@ -1,9 +1,14 @@
 <x-app-layout>
   <x-slot name="header">
-    <h2 class="text-xl font-semibold">{{ $restaurant->name }}</h2>
+    <h2 class="text-xl font-semibold">Szczegóły restauracji: {{ $restaurant->name }}</h2>
   </x-slot>
 
   <div class="max-w-7xl mx-auto bg-white shadow rounded-lg p-6 space-y-6 mt-2">
+
+    <div>
+      <span class="font-semibold text-gray-700">Nazwa restauracji:</span>
+      <span class="text-gray-600">{{ $restaurant->name }}</span>
+    </div>
 
     {{-- Adres --}}
     <div>
@@ -83,11 +88,6 @@
           <img src="{{ asset('storage/' . $restaurant->image) }}" alt="{{ $restaurant->name }}" style="height: 200px">
         </div>
       @endif
-
-      @foreach ($restaurant->cuisines as $cuisine)
-        <span class="bg-green-100 text-green-800 text-sm px-3 py-1 rounded-full">{{ $cuisine->name }}</span>
-      @endforeach
-
     </div>
 
     {{-- Opinia użytkownika --}}
@@ -161,7 +161,7 @@
       <h2 class="font-semibold text-gray-700">Opinie i komentarze użytkowników</h2>
 
       @forelse($restaurant->reviews as $review)
-        <div class="border p-4 rounded-lg">
+        <div class="border p-4 rounded-lg mt-3">
           <div class="flex items-center justify-between mb-2">
             <span class="font-semibold">Użytkownik: {{ $review->user->name }}</span>
             <span class="text-yellow-500">Opinia:

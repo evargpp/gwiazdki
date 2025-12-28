@@ -12,6 +12,9 @@
 
         <!-- Navigation Links -->
         <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+          <x-nav-link :href="route('restaurants.index')" :active="request()->routeIs('restaurants.index')">
+            {{ __('Restauracje') }}
+          </x-nav-link>
           @auth
             <x-nav-link :href="route('restaurants.userIndex')" :active="request()->routeIs('restaurants.userIndex')">
               {{ __('Twoje restauracje') }}
