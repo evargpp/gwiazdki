@@ -33,11 +33,10 @@ class RestaurantController extends Controller
             })
             ->when($request->rating_from || $request->rating_to, function ($query) use ($request) {
                 $query->withAvg('reviews', 'rating')
-                    ->having('reviews_avg_rating', '>=', $request->rating_from ?? 1)
+                    ->having('reviews_avg_rating', '>=', $request->rating_from ?? 0)
                     ->having('reviews_avg_rating', '<=', $request->rating_to ?? 5);
             })
             ->orderBy($sort, $direction)->paginate(10);
-
         return view('restaurants.index', compact('restaurants', 'allCuisines', 'sort', 'direction'));
     }
 
